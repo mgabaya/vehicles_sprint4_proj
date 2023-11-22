@@ -1,7 +1,7 @@
 import pandas as pd
 import streamlit as st
 import plotly.express as px
-import altair as alt
+# import altair as alt
 
 df_vehicles_us = pd.read_csv('vehicles_us.csv')
 
@@ -38,12 +38,20 @@ df_vehicles_us.drop(mbz_index[1: ], inplace=True)
 
 # print(df_vehicles_us.info())  # 51,525 entries
 
+# Pivot Tables
+pt_make_type = df_vehicles_us.groupby(['make', 'type'])['price'].mean().reset_index()
+pt_make_type_odom = df_vehicles_us.groupby(['make', 'type'])['odometer'].mean().reset_index()
+# Merge Pivot Tables
+cars_merge = pt_make_type.merge(pt_make_type_odom, on=['make', 'type'], how='outer')
+
+######----- Begin streamlit code -----######
+
 st.header('Vehicles For Sale')
 
 st.write('''
-    It is not a functional application yet. 
+    This app allows you to view and compare the different auto makers prices for their used cars. 
     
-    Under construction.
+    Some graphs have added features. Select the checkboxes to enhance the charts.
 
     ''')
 
@@ -52,40 +60,75 @@ st.header('Data viewer')
 # display the dataframe with streamlit
 st.dataframe(df_vehicles_us)
 
+#### CHECKBOX IDEAS
+# Show makers
+# Select size by days_listed or odometer
 
-fig_histogram = px.histogram(df_vehicles_us, x="price", nbins=50)
-# fig.show()
-# Histogram
-st.plotly_chart(fig_histogram)
-
-fig_scatter = px.scatter(df_vehicles_us, x="model_year", y="price", size="days_listed", color='make')
-fig_scatter.update_layout(
-    title_text='Pricing by Year', # title of plot
-    xaxis_title_text='Model Year', # xaxis label
-    yaxis_title_text='Price $USD', # yaxis label
-)
 # Scatter Plot
+st.write('''
+    The Scatter Plot below shows compares the model year and price of used cars in our data set.
+    
+    To add sizing to each dot according to the number of days listed and coloring each dot by maker, click the checkbox below
+''')
+
+enhanced = st.checkbox("Enhance the plot")  #, on_change=show_scatter())
+#color_make = st.checkbox("Show Vehicle Make by Color")  #, on_change=show_scatter())
+# def show_scatter():
+#     if size_days_listed:
+#         fig_scatter = px.scatter(df_vehicles_us, x="model_year", y="price", size="days_listed")
+#     elif color_make:
+#         fig_scatter = px.scatter(df_vehicles_us, x="model_year", y="price", color='make')
+#     elif size_days_listed & color_make:
+#         fig_scatter = px.scatter(df_vehicles_us, x="model_year", y="price", size="days_listed", color='make')
+#     else:
+#         fig_scatter = px.scatter(df_vehicles_us, x="model_year", y="price")
+if enhanced:
+    fig_scatter = px.scatter(df_vehicles_us, x="model_year", y="price", size="days_listed", color='make')
+else:
+    fig_scatter = px.scatter(df_vehicles_us, x="model_year", y="price")
+fig_scatter.update_layout(
+    title_text='Pricing by Year',  # title of plot
+    xaxis_title_text='Model Year',  # xaxis label
+    yaxis_title_text='Price $USD',  # yaxis label
+)
 st.plotly_chart(fig_scatter)
 
-def change_plot_args(column_x, column_y):  # pass different column names to change the x-values of the graphs
-    #    clean up df_vehicles_us if it has null values
-    df_nan_less = df_vehicles_us[~df_vehicles_us[column_x].isna()]
-    #    fig_scatter = px.scatter(df_vehicles_us, x=column_x, y="price")
-    vs_scatter = px.scatter(df_nan_less, x=column_x, y=column_y)  #, size="days_listed", color='make')
-    st.plotly_chart(vs_scatter)
 
+st.write('''
+    Customize the Histogram #2
+    
+    There were a few extremely expensive cars for sale. We provided a checkbox 
+    to see what it would look like without these values.
+    ''')
 
-
-st.write('Choose the Scatter Plot')
-
-yvp = st.checkbox("Year vs Price")
-ovp = st.checkbox("Odometer vs Price")
-
-if yvp:
-    change_plot_args('model_year', 'price')
-elif ovp:
-    change_plot_args('odometer', 'price')
+outliers = st.checkbox("Without the Extreme Values")
+if outliers:
+    with_or_without = df_vehicles_us[df_vehicles_us['price']<=100000]
 else:
-    st.write('A scatter plot should appear HERE after clicking a checkbox.')
+    with_or_without = df_vehicles_us
+pt_histogram = px.histogram(with_or_without, x='price', color='make', barmode="overlay", nbins=30)  # add checkboxes to show color make and hover type
+pt_histogram.update_layout(
+    title_text='Price For Used Cars', # title of plot
+    xaxis_title_text='Price $', # xaxis label
+    yaxis_title_text='Count', # yaxis label
+)
+st.plotly_chart(pt_histogram)
+
+# def change_plot_args(column_x, column_y):  # pass different column names to change the x-values of the graphs
+#     #    clean up df_vehicles_us if it has null values
+#     df_nan_less = df_vehicles_us[~df_vehicles_us[column_x].isna()]
+#     #    fig_scatter = px.scatter(df_vehicles_us, x=column_x, y="price")
+#     vs_scatter = px.scatter(df_nan_less, x=column_x, y=column_y)  #, size="days_listed", color='make')
+#     st.plotly_chart(vs_scatter)
+
+# yvp = st.checkbox("Year vs Price")
+# ovp = st.checkbox("Odometer vs Price")
+#
+# if yvp:
+#     change_plot_args('model_year', 'price')
+# elif ovp:
+#     change_plot_args('odometer', 'price')
+# else:
+#     st.write('A scatter plot should appear HERE after clicking a checkbox.')
 
 # cd /Documents/GitHub/vehicles_sprint4_proj
