@@ -49,7 +49,7 @@ cars_merge = pt_make_type.merge(pt_make_type_odom, on=['make', 'type'], how='out
 st.header('Vehicles For Sale')
 
 st.write('''
-    This app allows you to view and compare the different auto makers prices for their used cars. 
+    This dashboard app allows you to view and compare the different auto makers prices for their used cars. 
     
     Some graphs have added features. Select the checkboxes to enhance the charts.
 
@@ -132,3 +132,12 @@ st.plotly_chart(pt_histogram)
 #     st.write('A scatter plot should appear HERE after clicking a checkbox.')
 
 # cd /Documents/GitHub/vehicles_sprint4_proj
+
+# Added 8/16/24
+st.header('Compare price distribution between manufacturers')
+manufac_list = sorted(df_vehicles_us['make'].unique())
+manufacturer_1 = st.selectbox('Select manufacturer 1',
+                              manufac_list, index=manufac_list.index('bmw x5'))
+
+manufacturer_2 = st.selectbox('Select manufacturer 2',
+                              manufac_list, index=manufac_list.index('hyundai sonata'))
