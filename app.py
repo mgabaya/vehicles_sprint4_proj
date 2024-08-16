@@ -137,7 +137,7 @@ st.plotly_chart(pt_histogram)
 st.header('Compare price distribution between manufacturers')
 manufac_list = sorted(df_vehicles_us['make'].unique())
 manufacturer_1 = st.selectbox('Select manufacturer 1',
-                              manufac_list, index=manufac_list.index('bmw x5'))
+                              manufac_list, index=manufac_list.index('bmw'))
 
 manufacturer_2 = st.selectbox('Select manufacturer 2',
-                              manufac_list, index=manufac_list.index('hyundai sonata'))
+                              manufac_list, index=manufac_list.index('hyundai'))
