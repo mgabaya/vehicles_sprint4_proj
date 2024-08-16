@@ -141,3 +141,5 @@ manufacturer_1 = st.selectbox('Select manufacturer 1',
 
 manufacturer_2 = st.selectbox('Select manufacturer 2',
                               manufac_list, index=manufac_list.index('hyundai'))
+mask_filter = (df_vehicles_us['make'] == manufacturer_1) | (df_vehicles_us['make'] == manufacturer_2)
+df_filtered = df_vehicles_us[mask_filter]
