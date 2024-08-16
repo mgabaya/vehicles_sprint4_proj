@@ -143,3 +143,14 @@ manufacturer_2 = st.selectbox('Select manufacturer 2',
                               manufac_list, index=manufac_list.index('hyundai'))
 mask_filter = (df_vehicles_us['make'] == manufacturer_1) | (df_vehicles_us['make'] == manufacturer_2)
 df_filtered = df_vehicles_us[mask_filter]
+normalize = st.checkbox('Normalize histogram', value=True)
+if normalize:
+    histnorm = 'percent'
+else:
+    histnorm = None
+st.write(px.histogram(df_filtered,
+                      x='price',
+                      nbins=30,
+                      color='manufacturer',
+                      histnorm=histnorm,
+                      barmode='overlay'))
