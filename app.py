@@ -151,6 +151,6 @@ else:
 st.write(px.histogram(df_filtered,
                       x='price',
                       nbins=30,
-                      color='manufacturer',
+                      color='make',
                       histnorm=histnorm,
                       barmode='overlay'))
