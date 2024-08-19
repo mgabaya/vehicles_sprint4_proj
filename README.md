@@ -1,4 +1,4 @@
-# Used Car Sales Dashboard4444444444
+# Used Car Sales Dashboard
 Sprint 4 Project - Vehicles App
 
 ## Summary
