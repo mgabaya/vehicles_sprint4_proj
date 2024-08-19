@@ -43,7 +43,8 @@ pt_make_type = df_vehicles_us.groupby(['make', 'type'])['price'].mean().reset_in
 pt_make_type_odom = df_vehicles_us.groupby(['make', 'type'])['odometer'].mean().reset_index()
 # Merge Pivot Tables
 cars_merge = pt_make_type.merge(pt_make_type_odom, on=['make', 'type'], how='outer')
-pt_make_type = df_vehicles_us.groupby(['make', 'type'])['model_year'].count().reset_index()
+# pt_make_type = df_vehicles_us.groupby(['make', 'type'])['model_year'].count().reset_index()
+
 ######----- Begin streamlit code -----######
 
 st.header('Vehicles For Sale')
@@ -155,7 +156,7 @@ st.write(px.histogram(df_filtered,
                       histnorm=histnorm,
                       barmode='overlay'))
 
-st.header('Type of Car by Year')
-year_list = sorted(pt_make_type['year'].unique())
-year_select = st.selectbox('Select Year', year_list, index=year_list.index(2019))
+# st.header('Type of Car by Year')
+# year_list = sorted(pt_make_type['year'].unique())
+# year_select = st.selectbox('Select Year', year_list, index=year_list.index(2019))
 # st.write(px.pie(pt_make_type, values='pop', names='make', title='Type of Car For Sale by Year'))
